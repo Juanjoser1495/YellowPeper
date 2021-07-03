@@ -18,4 +18,17 @@ public class FundsTransferResponse {
     private List<String> errors;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double account_balance;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Double tax_collected;
+
+    public FundsTransferResponse(String status, List<String> errors){
+        this.status = status;
+        this.errors = errors;
+    }
+
+    public FundsTransferResponse(String status,List<String> errors, Double account_balance) {
+        this.status = status;
+        this.errors = errors;
+        this.account_balance = account_balance;
+    }
 }

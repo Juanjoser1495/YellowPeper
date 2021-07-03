@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/fundstransfer")
@@ -44,20 +45,21 @@ public class FundsTransferController {
                 .body(new FundsTransferResponse(FundsTransferConstants.OK, Collections.emptyList(), response.getBalance()));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
-                .body(new FundsTransferResponse(FundsTransferConstants.ERROR, Arrays.asList(FundsTransferConstants.INTERNAL_SERVER_ERROR), null));
+                .body(new FundsTransferResponse(FundsTransferConstants.ERROR, Arrays.asList(FundsTransferConstants.INTERNAL_SERVER_ERROR)));
         }
     }
 
     @PostMapping(value = "/transfer")
     public ResponseEntity<FundsTransferResponse> transferMoney(@RequestBody TransferMoneyRequest request) throws AccountNotFoundException {
         LOGGER.info("Entering the method transferMoney from FundsTransferController");
-        boolean response = accountService.transferMoney(request.getOriginAccount(), request.getDestinyAccount(), request.getAmount(), request.getDescription());
-        if (response) {
+        Map<String,Object> response = accountService.transferMoney(request.getOriginAccount(), request.getDestinyAccount(), request.getAmount(),
+                                                                   request.getDescription(),request.getCurrency());
+        if (!response.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                .body(new FundsTransferResponse());
+                .body(new FundsTransferResponse(FundsTransferConstants.OK,Collections.emptyList(),null,Double.parseDouble(response.get("tax").toString())));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON)
-                .body(new FundsTransferResponse(FundsTransferConstants.ERROR, Arrays.asList(FundsTransferConstants.ACCOUNT_NOT_FOUNDED), null));
+                .body(new FundsTransferResponse(FundsTransferConstants.ERROR, Arrays.asList(FundsTransferConstants.ACCOUNT_NOT_FOUNDED)));
         }
     }
 }

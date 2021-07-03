@@ -23,4 +23,4 @@ CREATE TABLE TRANSACTIONS
 
 INSERT INTO ACCOUNTS (account_number, balance, currency)
 VALUES ('123456', 1000, 'USD'),
-       ('789012', 200, 'CAD');
+       ('789012', 200, 'USD');
